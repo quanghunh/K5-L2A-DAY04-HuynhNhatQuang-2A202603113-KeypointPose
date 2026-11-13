@@ -1,0 +1,65 @@
+{
+ "mssv": "202603113",
+ "ten": "HuynhNhatQuang",
+ "pool_version": "d04-k5-v2",
+ "cvat_user": "quang",
+ "project": "d04-keypoint",
+ "persons": [
+  "000000021235.jpg",
+  "000000057978.jpg",
+  "000000261732.jpg",
+  "000000429594.jpg",
+  "000000431893.jpg",
+  "000000189365.jpg",
+  "000000311497.jpg",
+  "000000469061.jpg",
+  "000000163118.jpg",
+  "000000515309.jpg",
+  "000000572411.jpg",
+  "000000272026.jpg"
+ ],
+ "faces": [
+  "face_141135.jpg",
+  "face_3348.jpg",
+  "face_92028.jpg",
+  "face_185015.jpg",
+  "face_442231.jpg",
+  "face_288853.jpg",
+  "face_301643.jpg",
+  "face_490361.jpg"
+ ],
+ "tasks": {
+  "persons": {
+   "task_id": 10,
+   "job_id": 10,
+   "task_name": "persons-HuynhNhatQuang"
+  },
+  "faces": {
+   "task_id": 11,
+   "job_id": 11,
+   "task_name": "faces-HuynhNhatQuang"
+  },
+  "persons-extra": {
+   "task_id": 12,
+   "job_id": 12,
+   "task_name": "persons-extra-HuynhNhatQuang"
+  },
+  "faces-extra": {
+   "task_id": 13,
+   "job_id": 13,
+   "task_name": "faces-extra-HuynhNhatQuang"
+  }
+ },
+ "persons_extra": [
+  "000000065350.jpg",
+  "000000323525.jpg",
+  "000000465765.jpg"
+ ],
+ "faces_extra": [
+  "face_102517.jpg",
+  "face_274219.jpg",
+  "face_317330.jpg",
+  "face_379585.jpg",
+  "face_494518.jpg"
+ ]
+}
