@@ -67,14 +67,14 @@ Cờ trong bảng đọc từ CVAT. Cột "Lý do chọn" mô tả tình huống
 | `000000021235.jpg` | Người lướt ván giữa hình.                               | `left_ankle, right_ankle`                                                                                                                              | `ok`       | Lần đầu để hai cổ chân v = 0                                                                                                      | Sửa lại V = 1.                                                         |
 | `face_141135.jpg`  | Mặt ngay giữa                                           | `left_eye_outer, left_eye_inner, left_eye_upper, left_eye_lower, right_eye_outer, right_eye_inner, right_eye_upper, right_eye_lower`                   | `ok`       | Mắt trên mặt nhắm lại hẹp, ban đầu pose qua to không chính xác hình dáng mắt.                                                     | Thu hẹp lại cho các điểm pose chính xác mắt.                           |
 | `face_185015.jpg`  | Mặt ngay giữa hình                                      | `mouth_right`                                                                                                                                          | `ok`       | bị che khuất nên để v = 1, ban đầu để v = 2.                                                                                      | Sửa thành v = 1.                                                       |
-| `face_301643.jpg`  | #758 (kính râm)                                         | `left_eye_outer/inner/upper/lower`                                                                                                                     | `vis_flag` | Mắt nằm sau tròng kính râm tối nhưng để v = 2; theo CP2 bước 4 phải là `occluded` (v = 1), đặt theo gọng kính. Trái/phải vẫn đúng | Có (đổi sang `occluded`, xuất lại)                                     |
-| `face_301643.jpg`  | #758 (kính râm)                                         | `right_eye_outer/inner/upper/lower`                                                                                                                    | `vis_flag` | Như dòng trên, mắt còn lại                                                                                                        | Có (đổi sang `occluded`, xuất lại)                                     |
+| `face_301643.jpg`  | Người đeo kính râm                                      | `left_eye_outer/inner/upper/lower`                                                                                                                     | `vis_flag` | Mắt nằm sau tròng kính râm tối nhưng để v = 2; theo CP2 bước 4 phải là `occluded` (v = 1), đặt theo gọng kính. Trái/phải vẫn đúng | Có đổi sang `occluded`, xuất lại.                                      |
+| `face_301643.jpg`  | Người đeo kính râm                                      | `right_eye_outer/inner/upper/lower`                                                                                                                    | `vis_flag` | Như dòng trên, mắt còn lại                                                                                                        | Có đổi sang `occluded`, xuất lại.                                      |
 
 Tổng hợp số lỗi theo mã:
 
 | `lr_swap` | `vis_flag` | `position` | `missing` | `extra` | `ok` |
 | --------: | ---------: | ---------: | --------: | ------: | ---: |
-|         0 |          2 |          0 |         0 |       0 |    7 |
+|         0 |          2 |          0 |         0 |       0 |    6 |
 
 Điểm còn phân vân giữa `v = 1` và `v = 0` (ghi cả hai lựa chọn và lý do chọn):
 
@@ -86,17 +86,17 @@ Tổng hợp số lỗi theo mã:
 
 Tự kiểm tay trong file JSON (cột "`num_keypoints`" ghi giá trị kỳ vọng tính từ cờ trên CVAT; bạn mở file JSON trong zip để xác nhận từng người):
 
-| File                         | Người / mặt kiểm (ảnh, thứ tự)                        | Số phần tử `keypoints` | Điểm `outside` ra `v = 0`, `occluded` ra `v = 1`? | `num_keypoints` khớp?       |
-| ---------------------------- | ----------------------------------------------------- | ---------------------: | ------------------------------------------------- | --------------------------- |
-| `HuynhNhatQuang_persons.zip` | `000000189365.jpg`, #374 (3 điểm v = 1, 2 điểm v = 0) |                     51 | Có                                                | kỳ vọng 15 — ⟨cần xác nhận⟩ |
-| `HuynhNhatQuang_persons.zip` | `000000515309.jpg`, #590 (3 điểm v = 1, 5 điểm v = 0) |                     51 | Có                                                | kỳ vọng 12 — ⟨cần xác nhận⟩ |
-| `HuynhNhatQuang_faces.zip`   | `face_301643.jpg`, #758 (8 điểm mắt v = 1)            |                     39 | Có                                                | kỳ vọng 13 — ⟨cần xác nhận⟩ |
+| File                         | Người / mặt kiểm (ảnh, thứ tự)                                             | Số phần tử `keypoints` | Điểm `outside` ra `v = 0`, `occluded` ra `v = 1`? | `num_keypoints` khớp? |
+| ---------------------------- | -------------------------------------------------------------------------- | ---------------------: | ------------------------------------------------- | --------------------- |
+| `HuynhNhatQuang_persons.zip` | `000000189365.jpg`, người cần vượt đứng trước (3 điểm v = 1, 2 điểm v = 0) |                     51 | Có                                                | 15                    |
+| `HuynhNhatQuang_persons.zip` | `000000515309.jpg`, người lái xe to ở giữa (3 điểm v = 1, 5 điểm v = 0)    |                     51 | Có                                                | 12                    |
+| `HuynhNhatQuang_faces.zip`   | `face_301643.jpg`, mặt đeo kính râm (8 điểm mắt v = 1)                     |                     39 | Có                                                | 13                    |
 
-Căn cứ cột "Có": tổng cờ trong file xuất khớp đúng với cờ trên CVAT. File person có v = 1: 79 điểm, bằng số điểm `occluded`, và v = 0: 32 điểm, bằng số điểm `outside` của 21 skeleton. File face có v = 1: 9 điểm, gồm 8 điểm mắt ở ảnh kính râm và `mouth_right` ở `face_185015`.
+Sau khi xuất, CVAT ghi `occluded` thành `v = 1` và `outside` thành `v = 0`. Tọa độ của điểm `outside` trong file là `0, 0` hay tọa độ cũ?
+**Tọa độ cũ.** Script ghi nhận 32 điểm v = 0 vẫn mang tọa độ cũ (CVAT 2.x xuất như vậy, còn chuẩn COCO ghi `0, 0`).
 
-Sau khi xuất, CVAT ghi `occluded` thành `v = 1` và `outside` thành `v = 0`. Tọa độ của điểm `outside` trong file là `0, 0` hay tọa độ cũ? **Tọa độ cũ.** Script ghi nhận 32 điểm v = 0 vẫn mang tọa độ cũ (CVAT 2.x xuất như vậy, còn chuẩn COCO ghi `0, 0`). Đây không phải lỗi, vì điểm v = 0 bị bỏ qua khi huấn luyện và khi chấm.
-
-Hai job đã chuyển sang completed trên CVAT? **Có** (cả `persons-HuynhNhatQuang` và `faces-HuynhNhatQuang` ở trạng thái completed; hai job bonus cũng completed).
+Hai job đã chuyển sang completed trên CVAT?
+**Có**
 
 Dán phần **TÓM TẮT** in ra từ `src/check_submission.py`:
 
@@ -105,7 +105,7 @@ Dán phần **TÓM TẮT** in ra từ `src/check_submission.py`:
 - File person: HuynhNhatQuang_persons.zip
   Số ảnh: 12 · số skeleton `person`: 21 · mỗi annotation 51 số
   Skeleton theo ảnh: 000000021235=1, 000000057978=1, 000000163118=2, 000000189365=2, 000000261732=1, 000000272026=3, 000000311497=2, 000000429594=1, 000000431893=1, 000000469061=2, 000000515309=1, 000000572411=4
-  Cờ v: v=2 246 (69%) · v=1 79 (22%) · v=0 32 (9%)
+  Cờ v: v=2 245 (69%) · v=1 80 (22%) · v=0 32 (9%)
   num_keypoints trung bình: 15.5
 - File face: HuynhNhatQuang_faces.zip
   Số ảnh: 8 · số skeleton `face`: 8 · mỗi annotation 39 số
@@ -121,7 +121,20 @@ Kết quả: **ĐẠT**, 0 `[LỖI]`, 5 `[CẢNH BÁO]`. Script báo đủ 12 �
 
 Các `[CẢNH BÁO]` còn giữ nguyên và lý do:
 
-⟨cần điền: chép nội dung 5 dòng `[CẢNH BÁO]` trong output script, mỗi dòng ghi "sửa" hoặc "giữ nguyên, vì …"⟩
+[CẢNH BÁO] 000000311497.jpg #2: cặp knee, ankle nằm ngược phía so với các cặp còn lại. Có thể đổi trái/phải một cặp (`lr_swap`), hoặc tay / chân bắt chéo thật: kiểm lại.
+---> giữ vì đã kiểm tra lại hướng vai và vai chính xác.
+
+[CẢNH BÁO] 000000469061.jpg #2: cặp ear nằm ngược phía so với các cặp còn lại. Có thể đổi trái/phải một cặp (`lr_swap`), hoặc tay / chân bắt chéo thật: kiểm lại.
+---> giữ vì đã kiểm tra lại hướng vai và vai chính xác.
+
+[CẢNH BÁO] 000000572411.jpg #1: cặp wrist nằm ngược phía so với các cặp còn lại. Có thể đổi trái/phải một cặp (`lr_swap`), hoặc tay / chân bắt chéo thật: kiểm lại.
+---> giữ vì đã kiểm tra lại hướng vai và vai chính xác.
+
+[CẢNH BÁO] 000000572411.jpg #2: cặp wrist nằm ngược phía so với các cặp còn lại. Có thể đổi trái/phải một cặp (`lr_swap`), hoặc tay / chân bắt chéo thật: kiểm lại.
+---> giữ vì đã kiểm tra lại hướng vai và vai chính xác.
+
+[CẢNH BÁO] 000000572411.jpg #3: các điểm chỉ trải cao 29 px (< 60 px). Người dưới 60 px không gán; nếu người cao hơn nhưng bị cắt khung thì bỏ qua cảnh báo này.
+---> giữ vì cho rằng kích người này vẫn đủ dể có thể pose
 
 ## 6. Ảnh chụp màn hình
 
@@ -129,8 +142,7 @@ Các `[CẢNH BÁO]` còn giữ nguyên và lý do:
 
    ![Label person](images/1_label_person.png)
 
-2. Một người quay lưng đã gán, cờ đã đặt (gợi ý: `000000515309.jpg` hoặc `000000163118.jpg`):
-
+2. Một người quay lưng đã gán, cờ đã đặt:
    ![Người quay lưng](images/2_nguoi_quay_lung.png)
 
 3. Một khuôn mặt đã gán 13 điểm, phóng to vùng mắt:
@@ -145,13 +157,14 @@ Nguồn ảnh: COCO val2017 / Wikimedia Commons.
 
 ## 7. Tự đánh giá
 
-1. Lỗi bạn mắc nhiều nhất hôm nay, và cách bạn sẽ tránh ở dự án thật:
+1. Lỗi mắc nhiều nhất, và cách sẽ tránh ở dự án thật:
 
-   ⟨cần điền⟩ — Lỗi tìm được khi review: `vis_flag` ở ảnh kính râm (`face_301643.jpg`), 8 điểm mắt để v = 2 thay vì v = 1 (đã sửa).
+   Xác định nhầm hướng người dẫn đến pose ngược vai/tay/đùi/...
 
 2. Một quy tắc bạn đề xuất thêm vào guideline (kèm ảnh ví dụ nếu có):
 
-   ⟨cần điền⟩
+   Quy tắc cách đo ngưỡng 60 px cho người bị che hoặc bị cắt một phần
+   Ví dụ: Ở 000000572411.jpg (tàu chở khách), bốn hành khách cao khoảng 60–65 px. Riêng một người bị thành toa che từ hông xuống, phần thấy được chỉ khoảng 29 px. --> Không biết nên gán k ?
 
 3. Nhãn của bạn đi vào model ở đâu? Chọn một lỗi bạn đã sửa và nói nó sẽ làm model học sai thế nào (heatmap, trọng số trong loss, hay bước lật ảnh):
 
@@ -159,7 +172,7 @@ Nguồn ảnh: COCO val2017 / Wikimedia Commons.
 
 ## 8. Khó khăn và lỗi kỹ thuật
 
-⟨cần điền⟩
+Thao tác còn chậm và chưa quen xác định thân người.
 
 ## Bonus (nếu làm)
 
@@ -167,11 +180,11 @@ Nguồn ảnh: COCO val2017 / Wikimedia Commons.
 
 Task `persons-extra-HuynhNhatQuang`, job đã completed.
 
-| Ảnh                |          Số skeleton | Số người dưới 60 px | Ca khó nhất                                                                            |
-| ------------------ | -------------------: | ------------------: | -------------------------------------------------------------------------------------- |
-| `000000065350.jpg` | 3 (#828, #829, #864) |          ⟨cần điền⟩ | #864: người ở mép phải, 7 điểm `outside` (cả 5 điểm đầu, `right_elbow`, `right_wrist`) |
-| `000000323525.jpg` | 3 (#882, #883, #918) |          ⟨cần điền⟩ | #883: người bị che nhiều, 11/17 điểm `occluded`                                        |
-| `000000465765.jpg` | 3 (#936, #954, #955) |          ⟨cần điền⟩ | #936: 9/17 điểm `occluded`                                                             |
+| Ảnh                | Số skeleton | Số người dưới 60 px | Ca khó nhất                                                                      |
+| ------------------ | ----------: | ------------------: | -------------------------------------------------------------------------------- |
+| `000000065350.jpg` |           3 |                   0 | người ở mép phải, 7 điểm `outside` (cả 5 điểm đầu, `right_elbow`, `right_wrist`) |
+| `000000323525.jpg` |           3 |                   0 | người áo trắng xanh bị che nhiều, 11/17 điểm `occluded`                          |
+| `000000465765.jpg` |           3 |                   0 | Người ở giữa gần cam nhất 9/17 điểm `occluded`                                   |
 
 Kết quả `src/check_submission.py` cho `HuynhNhatQuang_bonus_persons.zip`:
 
@@ -181,31 +194,27 @@ Kết quả `src/check_submission.py` cho `HuynhNhatQuang_bonus_persons.zip`:
 
 ### B2 — 5 ảnh khuôn mặt đen trắng / hồng ngoại
 
-Task `faces-extra-HuynhNhatQuang`, job đã completed: 5 ảnh (`face_102517`, `face_274219`, `face_317330`, `face_379585`, `face_494518`), mỗi ảnh 1 skeleton 13 điểm; `left_eye_*` và `mouth_left` nằm bên phải ảnh ở cả 5 mặt. Chỉ có 1 điểm `occluded`: `mouth_right` ở `face_317330.jpg`.
-
 Ảnh không màu khó hơn ở điểm nào? Kính râm trên ảnh hồng ngoại có còn là `v = 1` không?
 
-⟨cần điền⟩
+Ảnh không màu khó nhìn khóe mắt hơn.
+Không nhất thiết v = 1. Tùy trường hợp:
+Thấy rõ khóe và mí mắt qua kính: v = 2.
+Tròng vẫn tối nhưng ước lượng chắc theo gọng: v = 1. Có loại tròng chặn cả hồng ngoại.
+Không ước lượng được: v = 0.
 
 ### B3 — Model so với nhãn của tôi (không tính điểm)
 
-- Demo đã dùng: ⟨cần điền / không làm⟩
-- Ảnh đã thử: ⟨cần điền⟩
+- Demo đã dùng: không làm
+- Ảnh đã thử:
 
 1. Model có trả điểm cho khớp bị che, hay khớp ngoài ảnh không? Confidence ở các điểm đó thế nào?
 
-   ⟨cần điền⟩
-
 2. Với người quay lưng, model có đổi trái/phải không?
 
-   ⟨cần điền⟩
-
 3. Bộ điểm của model có giống 17 điểm COCO không?
-
-   ⟨cần điền⟩
 
 ## 9. Tài liệu tham khảo và công cụ AI đã dùng
 
 - Tài liệu của lab: `README.md`, `CHECKPOINTS.md`, `RUBRIC.md`, `docs/GUIDELINE.md`, `docs/CVAT_CHEATSHEET.md`, `docs/COCO_KEYPOINTS.md`.
 - Lin et al., 2014. _Microsoft COCO: Common Objects in Context_.
-- Công cụ AI: Claude (Anthropic) dùng để đọc dữ liệu nhãn trên CVAT (chỉ đọc) và soạn khung báo cáo; việc gán nhãn do tôi tự làm trên CVAT. ⟨bổ sung nếu dùng thêm⟩
+- Công cụ AI: Claude (Anthropic) dùng để giải thích khái niệm và hỗ trợ viết báo cáo.
